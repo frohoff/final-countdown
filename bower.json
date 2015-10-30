@@ -1,0 +1,38 @@
+{
+  "name": "final-countdown",
+  "authors": [
+    "Chris Frohoff <chris@frohoff.org>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "flipclock": "~0.7.7",
+    "jt.timepicker": "jquery-timepicker-jt#~1.8.3",
+    "speech-synthesis": "~0.4.0",
+    "jquery.cookie": "~1.4.1",
+    "jQuery-Storage-API": "~1.7.4"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "dist/js/bootstrap.js",
+        "dist/css/bootstrap.css",
+        "less/bootstrap.less"
+      ]
+    }
+  }
+}

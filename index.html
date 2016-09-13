@@ -11,9 +11,37 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <p></p>
-    <p><input type="text" id="time"></p>
-    <div id="clock"></div>
+    <div class="container">
+      <div class="row">
+          
+        <div class="center-block">
+          <div id="clock-cont">
+            <div id="clock"></div>
+          </div>
+          <div id"cont-cont">
+            <div id="cont">
+              <h2>To Do List</h2>
+              <ul>
+                <li>take medicine</li>              
+                <li>dressed for weather (clean, shoes, jackets)</li>
+                <li>eat breakfast</li>
+                <li>make lunch and put away</li>
+                <li>clean up from breakfast and lunch (dishes in dishwasher, sink rinsed)</li>
+                <li>brush teeth and hair</li>
+                <li>put on deoderant</li>
+                <li>backpacks inside and ready (HW, PE clothes)</li>
+                <li>feed dogs</li>
+                <li>close bedroom doors</li>
+              </ul>
+              <p><input type="text" id="time"></p>
+              <p><input type="text" id="tags"></p>
+              <a id="onlineRadioLink" href="http://radiotuna.com/ambient-radio">ambient radio</a><script type="text/javascript" src="http://radiotuna.com/OnlineRadioPlayer/EmbedRadio?playerParams=%7B%22styleSelection0%22%3A178%2C%22styleSelection1%22%3A7%2C%22styleSelection2%22%3A129%2C%22textColor%22%3A0%2C%22backgroundColor%22%3A15592941%2C%22buttonColor%22%3A13092807%2C%22glowColor%22%3A13092807%2C%22playerSize%22%3A240%2C%22playerType%22%3A%22style%22%7D&width=240&height=292"></script>
+            </div>
+          <div>
+        </div>
+          
+      </div>
+    </div>
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
@@ -22,6 +50,13 @@
     <script src="bower_components/speech-synthesis/src/polyfill.js"></script>
     <script src="bower_components/jquery.cookie/jquery.cookie.js"></script>
     <script src="bower_components/jQuery-Storage-API/jquery.storageapi.js"></script>
+    <script src="bower_components/SoundManager2/script/soundmanager2.js"></script>
+    <script src="bower_components/background-check/background-check.js"></script>
+    <script src="bower_components/jquery-deserialize/src/jquery.deserialize.js"></script>
+    <script src="bower_components/velocity/velocity.js"></script>
+    <script src="bower_components/velocity/velocity.ui.js"></script>
+    <script src="bower_components/background-blur/dist/background-blur.min.js"></script>
+    <script src="bower_components/Blur.js/dist/jquery.blur.js"></script>
     <!-- endbower -->
     <script src="script.js"></script>
   </body>

@@ -1,0 +1,45 @@
+div.container.background--dark {
+	background: rgba(0,0,0,0.4);
+	color: white;
+}
+
+div.container.background--light {
+	background: rgba(255,255,255,0.4);
+	color: black;
+}
+
+input {
+	color: black;
+}
+
+div.container {
+	text-align: center 
+}
+
+div#cont {
+	display: inline-block;
+}
+
+div#clock-cont {
+	padding-bottom: 3em;
+}
+
+div#clock {
+	padding-top: 2.0em;
+	display: inline-block;
+	transform: scale(1.5,1.5);
+	transform-origin: center top;
+
+}
+
+div.flip-clock-wrapper {
+	width: unset;
+}
+
+ul {
+	text-align: left;
+}
+
+.flip-clock-divider .flip-clock-label {
+	color: unset;
+}

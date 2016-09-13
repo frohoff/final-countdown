@@ -15,6 +15,13 @@ $(function(){
 	});
 	setTime();
 
+	$('#tags').val($.localStorage.get('tags') || 'yosemite');
+	$('#tags').change(function(){
+		$.localStorage.set('tags', $(this).val());
+
+		randomizeBg();
+	});	
+
 	function setTime() {
 		clock.stop();
 		var endTime = $('#time').timepicker('getTime');
@@ -32,13 +39,109 @@ $(function(){
 	function check() {
 		var sec = clock.getTime();
 		var hms = secToHms(sec);
-		if (hms.min % 5 == 0 && hms.sec == 0) {
+		if (hms.min % 1 == 0 && hms.sec == 0 || hms.hour == 0 && hms.min == 0 && hms.sec < 20) {
 			sayTime();
+		}
+		if (hms.hour == 0 && hms.min == 0 && hms.sec == 0) {
+			clock.stop();
+			say('time up');
+			clearInterval(checkInterval);
 		}
 	}
 
+	function randomizeBg() {
+		keywords = $("#tags").val().split(";") //["astrophotography", "pugs"] 
+		//keywords = ["pugs"]
+		randKeyword = keywords[Math.floor(Math.random()*keywords.length)]
+		console.info("randomizing bg")
+//https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=15aea8f087339a8e285d5dd71be8bfc1&tags=landscape&extras=o_dims%2C+url_o&format=json
+            //$.getJSON("https://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
+           	$.getJSON("https://api.flickr.com/services/rest/",            	
+            {
+               	method: "flickr.photos.search",
+               	api_key: "8c0309d84159f59009457f3c7ab5f79d",
+               	extras: "o_dims,url_o",
+                  tags: randKeyword,
+                  format: "json",
+                  nojsoncallback: 1,
+                  sort: "interestingness-desc"
+                },
+
+                //The callback function
+                function(data) {
+					console.info(data)	
+					photos = $.grep(data.photos.photo, function(p){
+						return p.url_o;
+					})
+                  //Get random photo from the api's items array
+                    var randomPhoto = photos[Math.floor(Math.random() * photos.length)];  
+
+                    console.info(randomPhoto)
+
+                    url = "https://crossorigin.me/" + randomPhoto.url_o
+                    //url = "http://cors.io/?" + randomPhoto.url_o
+
+                    $('<img/>').attr('crossOrigin', 'Anonymous').attr('src', url).load(function() {
+
+						var canvas = document.createElement('canvas');
+				        canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+				        canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+				        canvas.getContext('2d').drawImage(this, 0, 0);
+
+				        // Get raw image data
+				        imgDataURI = canvas.toDataURL('image/png')
+
+
+					   $(this).remove(); // prevent memory leaks as @benweet suggested
+
+						console.info("loaded")
+
+	                    $("body").css({
+
+
+	                      position: "relative",
+	                      height: "100vh",
+	                    //Use the randomPhoto's link
+	                      backgroundImage: 'url("'+imgDataURI+'")',
+	                      backgroundPosition: "center",
+	                      backgroundRepeat: "no-repeat",
+	                      backgroundSize: "cover"
+	                    });
+
+						BackgroundCheck.init({
+						  targets: 'div.container',
+						  images: 'body'
+						});
+
+	                    //BackgroundCheck.refresh();
+
+// $('.target').blurjs({
+//     source: 'body',
+//     radius: 7,
+//     overlay: 'rgba(255,255,255,0.4)'
+// });	                    
+
+					});
+
+                    
+
+                    
+                 }
+             );			
+	}
+
 	say('hi');
-	setInterval(check, 1000);
+
+
+
+
+	var checkInterval = setInterval(check, 1000);
+	var checkInterval = setInterval(randomizeBg, 60 * 1000);
+
+randomizeBg();
+
+
 	
 });
 
@@ -79,3 +182,7 @@ function say(s) {
 	speechSynthesis.speak(u);
 	console.info('said ' + s);
 }
+
+
+
+

@@ -1,3 +1,7 @@
+body.initial {
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII);
+}
+
 div.container.background--dark {
 	background: rgba(0,0,0,0.4);
 	color: white;

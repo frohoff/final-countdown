@@ -1,8 +1,27 @@
 $(function(){
+	var soundPath = "bower_components/ion-sound/sounds/";
+	ion.sound({
+	    sounds: [
+	        {
+	            name: "bell_ring"
+	        },
+	    ],
+	    path: soundPath,
+	    preload: true
+	});
+
+	function ding(){
+		ion.sound.play('bell_ring');
+	}	
+
 	var clock = $('#clock').FlipClock({
 		countdown: true
 	});
-	$('#clock').click(sayTime);
+
+	$('#clock').click(function(){
+		ding();
+		randomizeBg();
+	})
 
 	$('#time').val($.localStorage.get('time') || '07:15am');
 	$('#time').timepicker({
@@ -10,15 +29,14 @@ $(function(){
 	});
 	$('#time').change(function(){
 		$.localStorage.set('time', $(this).val());
-
 		setTime();
 	});
 	setTime();
 
+	var pages = {};
 	$('#tags').val($.localStorage.get('tags') || 'yosemite');
 	$('#tags').change(function(){
 		$.localStorage.set('tags', $(this).val());
-
 		randomizeBg();
 	});	
 
@@ -32,36 +50,30 @@ $(function(){
 		clock.start();
 	}
 
-	function sayTime() {
-		var sec = clock.getTime();
-		var str = secToStr(sec);
-		say(str);
-	}
-
 	function check() {
 		var sec = clock.getTime();
 		var hms = secToHms(sec);
 		if (hms.min % 1 == 0 && hms.sec == 0 || hms.hour == 0 && hms.min == 0 && hms.sec < 20) {
-			sayTime();
+			ding();
 		}
 		if (hms.hour == 0 && hms.min == 0 && hms.sec == 0) {
 			clock.stop();
-			say('time up');
 			clearInterval(checkInterval);
 		}
 	}
 
 	function randomizeBg() {
 		keywords = $("#tags").val().split(";") //["astrophotography", "pugs"] 
-		//keywords = ["pugs"]
 		randKeyword = keywords[Math.floor(Math.random()*keywords.length)]
+		keywordPages = pages[randKeyword]
+		page = keywordPages ? Math.floor(Math.random()*keywordPages) : 1
 		console.info("randomizing bg")
-//https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=15aea8f087339a8e285d5dd71be8bfc1&tags=landscape&extras=o_dims%2C+url_o&format=json
-            //$.getJSON("https://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
            	$.getJSON("https://api.flickr.com/services/rest/",            	
             {
                	method: "flickr.photos.search",
                	api_key: "8c0309d84159f59009457f3c7ab5f79d",
+               	per_page: 500,
+               	page: page,
                	extras: "o_dims,url_o",
                   tags: randKeyword,
                   format: "json",
@@ -71,14 +83,16 @@ $(function(){
 
                 //The callback function
                 function(data) {
-					console.info(data)	
+					console.info('found total photos: ' + data.photos.total)
+					pages[randKeyword] = data.photos.pages;
 					photos = $.grep(data.photos.photo, function(p){
-						return p.url_o;
+						return p.url_o && p.width_o < 3000 && p.width_o > 1920;
 					})
+					console.info('found photos on page ' + page + ': ' + photos.length)
                   //Get random photo from the api's items array
                     var randomPhoto = photos[Math.floor(Math.random() * photos.length)];  
 
-                    console.info(randomPhoto)
+                    console.info(JSON.stringify(randomPhoto));
 
                     /*
                     https://gist.github.com/jimmywarting/ac1be6ea0297c16c477e17f8fbe51347
@@ -92,65 +106,53 @@ $(function(){
 
                     $('<img/>').attr('crossOrigin', 'Anonymous').attr('src', url).on('load', function() {
 
-						var canvas = document.createElement('canvas');
-				        canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
-				        canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+						console.info("loaded")
 
-				        canvas.getContext('2d').drawImage(this, 0, 0);
+						// var canvas = document.createElement('canvas');
+				  //       canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+				  //       canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
 
-				        // Get raw image data
-				        imgDataURI = canvas.toDataURL('image/png')
+				  //       canvas.getContext('2d').drawImage(this, 0, 0);
 
+				  //       imgDataURI = canvas.toDataURL('image/png')
 
 					   $(this).remove(); // prevent memory leaks as @benweet suggested
 
-						console.info("loaded")
+						console.info("swapping in")
+
+						//BackgroundCheck.destroy();
 
 	                    $("body").css({
-
-
 	                      position: "relative",
 	                      height: "100vh",
-	                    //Use the randomPhoto's link
-	                      backgroundImage: 'url("'+imgDataURI+'")',
+	                      backgroundImage: 'url('+url+')',
 	                      backgroundPosition: "center",
 	                      backgroundRepeat: "no-repeat",
 	                      backgroundSize: "cover"
 	                    });
+	                    console.info("done swapping in")
 
-						BackgroundCheck.init({
-						  targets: 'div.container',
-						  images: 'body'
-						});
-
-	                    //BackgroundCheck.refresh();
-
-// $('.target').blurjs({
-//     source: 'body',
-//     radius: 7,
-//     overlay: 'rgba(255,255,255,0.4)'
-// });	                    
+	                    window.requestIdleCallback(function(){
+	                    	console.info('refreshing');
+	                    	BackgroundCheck.init({
+							  targets: 'div.container',
+							  images: 'body',
+							  windowEvents: false
+							});
+	                    	BackgroundCheck.refresh()
+	                    	//BackgroundCheck.refresh($('div.container')[0], false, $('body')[0]);	
+	                    	console.info('done refreshing')
+	                    })
 
 					});
-
-                    
-
-                    
                  }
              );			
 	}
 
-	say('hi');
-
-
-
-
 	var checkInterval = setInterval(check, 1000);
-	var checkInterval = setInterval(randomizeBg, 60 * 1000);
+	var randomizeBgInterval = setInterval(randomizeBg, 30 * 1000);
 
-randomizeBg();
-
-
+	randomizeBg();
 	
 });
 
@@ -180,20 +182,3 @@ function secToStr(sec) {
 	hms = secToHms(sec)
 	return ('' + (hms.hour > 0 ? hms.hour + ' hours ' : '') + (hms.min > 0 ? hms.min + ' minutes ' : '') + (hms.sec > 0 ? hms.sec + ' seconds ' : '')).trim();
 }
-
-function say(s) {
-	var speechSynthesis = window.getSpeechSynthesis();
-	var speechSynthesisUtterance = window.getSpeechSynthesisUtterance();
-
-	var u = new speechSynthesisUtterance(s);
-	u.lang = 'en-US';
-	u.volume = 1.0;
-	u.rate = 1.0;
-	u.onend = function(event) { };
-	speechSynthesis.speak(u);
-	console.info('said ' + s);
-}
-
-
-
-

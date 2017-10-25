@@ -24,7 +24,8 @@
     "jt.timepicker": "jquery-timepicker-jt#~1.8.3",
     "speech-synthesis": "~0.4.0",
     "jQuery-Storage-API": "~1.7.4",
-    "background-check": "~1.2.2"
+    "background-check": "https://github.com/Jeseeq/background-check.git#415d01ba72d1335d49ec54c7e127ffb18ea1c994",
+    "ion-sound": "ionsound#^3.0.7"
   },
   "overrides": {
     "bootstrap": {

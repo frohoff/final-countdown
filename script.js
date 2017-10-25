@@ -24,8 +24,10 @@ $(function(){
 
 	function setTime() {
 		clock.stop();
-		var endTime = $('#time').timepicker('getTime');
+		var endTime = $('#time').timepicker('getTime', new Date());
+		console.log(endTime)
 		var time = getTimer(endTime);
+		console.log(time)
 		clock.setTime(time / 1000);
 		clock.start();
 	}
@@ -78,10 +80,17 @@ $(function(){
 
                     console.info(randomPhoto)
 
-                    url = "https://crossorigin.me/" + randomPhoto.url_o
-                    //url = "http://cors.io/?" + randomPhoto.url_o
+                    /*
+                    https://gist.github.com/jimmywarting/ac1be6ea0297c16c477e17f8fbe51347
+                    https://alternativeto.net/software/cors-proxy/
+                    */
 
-                    $('<img/>').attr('crossOrigin', 'Anonymous').attr('src', url).load(function() {
+                    //url = "https://crossorigin.me/" + randomPhoto.url_o
+                    //url = "http://cors.io/?" + randomPhoto.url_o
+                    //url = "https://cors-anywhere.herokuapp.com/" + randomPhoto.url_o
+                    url = "https://galvanize-cors-proxy.herokuapp.com/" + randomPhoto.url_o.replace(/https?:\/\//g,"")
+
+                    $('<img/>').attr('crossOrigin', 'Anonymous').attr('src', url).on('load', function() {
 
 						var canvas = document.createElement('canvas');
 				        canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
@@ -149,10 +158,12 @@ var dayInMs = 24 * 60 * 60 * 1000;
 
 function getTimer(time) {
 	var now = new Date();
+	console.log('now: ' + now);
 	if (time.getTime() < now.getTime()) { // if time in the past
 		time = new Date(time.getTime() + dayInMs); // set to next day
 	}
 	var diff = time.getTime() - now.getTime();
+	console.log('diff: ' + diff);
 	return diff;
 }
 

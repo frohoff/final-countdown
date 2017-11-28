@@ -74,6 +74,7 @@ $(function(){
                	api_key: "8c0309d84159f59009457f3c7ab5f79d",
                	per_page: 500,
                	page: page,
+               	safe_search: 1,
                	extras: "o_dims,url_o",
                   tags: randKeyword,
                   format: "json",
